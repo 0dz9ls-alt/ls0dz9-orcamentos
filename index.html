@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B1B33">
+<meta name="description" content="LS0DZ9 Orçamentos - calculadora profissional de pintura residencial e comercial">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>LS0DZ9 | Orçamento de Pintura</title>
+<style>
+:root{--navy:#0B1B33;--gold:#D99A19;--light:#F5F7FA;--gray:#5B6573}
+*{box-sizing:border-box} body{margin:0;background:#eef1f5;font-family:Arial,sans-serif;color:var(--navy)}
+.app{max-width:760px;margin:auto;padding:14px}.card{background:#fff;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 3px 14px #0001}
+.brand{text-align:center;background:var(--navy);color:#fff;border-radius:16px;padding:18px}.brand h1{margin:0;font-size:28px;letter-spacing:1px}.brand p{margin:6px 0 0;color:#f2c15d}
+h2{font-size:16px;margin:0 0 12px;padding-bottom:8px;border-bottom:3px solid var(--gold)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
+label{font-size:12px;font-weight:bold;display:block;margin-bottom:4px;color:var(--gray)}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ccd3dc;border-radius:9px;font-size:15px;background:#fff}
+textarea{min-height:76px;resize:vertical}.calc{background:var(--light);border-radius:10px;padding:10px;margin-top:10px}
+.line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e3e6ea}.line:last-child{border:0}
+.total{font-size:21px;font-weight:bold;background:var(--navy);color:#fff;border-radius:10px;padding:14px;margin-top:12px}
+button{width:100%;border:0;border-radius:11px;padding:15px;font-size:16px;font-weight:bold;margin-top:10px;cursor:pointer}
+.primary{background:var(--gold);color:var(--navy)} .secondary{background:var(--navy);color:#fff}
+.small{font-size:12px;color:var(--gray);text-align:center}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+@media print{
+ body{background:#fff}.app{max-width:none;padding:0}.noprint{display:none!important}
+ .card{box-shadow:none;border-radius:0;margin:8px 0;padding:10px}.brand{border-radius:0}
+ input,select,textarea{border:0;padding:0;background:transparent;appearance:none;color:#000}
+ h2{margin-bottom:7px}.total{background:var(--navy)!important;color:#fff!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand">
+    <h1>LS0DZ9</h1>
+    <p>Pintura Residencial e Comercial</p>
+    <small>Qualidade e acabamento em cada detalhe.</small>
+  </div>
+
+  <div class="card">
+    <h2>Cliente e Obra</h2>
+    <div class="grid">
+      <div><label>Cliente</label><input id="cliente" placeholder="Nome do cliente"></div>
+      <div><label>Telefone</label><input id="telefone" placeholder="(19) 99999-9999"></div>
+      <div class="full"><label>Endereço da obra</label><input id="endereco" placeholder="Endereço completo"></div>
+      <div><label>Validade (dias)</label><input id="validade" type="number" value="15"></div>
+      <div><label>Pagamento</label><input id="pagamento" placeholder="Ex.: Pix, dinheiro, parcelas"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Medição</h2>
+    <div class="grid">
+      <div><label>Largura (m)</label><input id="largura" type="number" step="0.01" value="0"></div>
+      <div><label>Comprimento (m)</label><input id="comprimento" type="number" step="0.01" value="0"></div>
+      <div><label>Altura (m)</label><input id="altura" type="number" step="0.01" value="0"></div>
+      <div><label>Área de portas/janelas (m²)</label><input id="aberturas" type="number" step="0.01" value="0"></div>
+      <div><label>Demãos</label><input id="demaos" type="number" value="2"></div>
+      <div><label>Rendimento da tinta (m²/L)</label><input id="rendimento" type="number" step="0.1" value="10"></div>
+      <div><label>Perda de tinta (%)</label><input id="perda" type="number" value="10"></div>
+      <div><label>Pintar teto?</label><select id="teto"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
+    </div>
+    <div class="calc">
+      <div class="line"><span>Área líquida de paredes</span><b id="areaParede">0,00 m²</b></div>
+      <div class="line"><span>Área de teto</span><b id="areaTeto">0,00 m²</b></div>
+      <div class="line"><span>Tinta estimada</span><b id="litros">0,0 L</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Valores</h2>
+    <div class="grid">
+      <div><label>Materiais (R$)</label><input id="materiais" type="number" step="0.01" value="0"></div>
+      <div><label>Mão de obra por m² (R$)</label><input id="precoM2" type="number" step="0.01" value="0"></div>
+      <div><label>Custos extras (R$)</label><input id="extras" type="number" step="0.01" value="0"></div>
+      <div><label>Imprevistos (%)</label><input id="imprevistos" type="number" step="0.1" value="5"></div>
+      <div><label>Lucro / markup (%)</label><input id="lucroPct" type="number" step="0.1" value="30"></div>
+      <div><label>Desconto (R$)</label><input id="desconto" type="number" step="0.01" value="0"></div>
+    </div>
+    <div class="calc">
+      <div class="line"><span>Mão de obra calculada</span><b id="mao">R$ 0,00</b></div>
+      <div class="line"><span>Custo total</span><b id="custo">R$ 0,00</b></div>
+      <div class="line"><span>Lucro</span><b id="lucro">R$ 0,00</b></div>
+      <div class="total">VALOR FINAL <span id="final" style="float:right">R$ 0,00</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Descrição do serviço</h2>
+    <textarea id="descricao" placeholder="Ex.: Preparação das superfícies, correções, aplicação de massa, lixamento e pintura..."></textarea>
+  </div>
+
+  <div class="noprint">
+    <button class="primary" onclick="gerarPDF()">GERAR PDF DO ORÇAMENTO</button>
+    <button id="installBtn" class="secondary" style="display:none">INSTALAR APLICATIVO</button>
+    <button class="secondary" onclick="salvar()">SALVAR DADOS NESTE CELULAR</button>
+    <button class="secondary" onclick="carregar()">CARREGAR ÚLTIMO ORÇAMENTO</button>
+    <p class="small">No celular, escolha “Salvar como PDF” ou “Imprimir” quando a tela de impressão abrir.</p>
+  </div>
+
+  <div class="card">
+    <p style="text-align:center;margin:0;font-size:12px;color:var(--gray)">
+      LS0DZ9 • Valinhos/SP • WhatsApp: +55 19 99714-7926
+    </p>
+  </div>
+</div>
+
+<script>
+const ids=["largura","comprimento","altura","aberturas","demaos","rendimento","perda","teto","materiais","precoM2","extras","imprevistos","lucroPct","desconto","cliente","telefone","endereco","validade","pagamento","descricao"];
+function n(id){return parseFloat(document.getElementById(id).value)||0}
+function br(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function calc(){
+ const l=n("largura"),c=n("comprimento"),a=n("altura"),ab=n("aberturas");
+ const parede=Math.max(0,2*(l+c)*a-ab);
+ const teto=document.getElementById("teto").value==="sim"?l*c:0;
+ const litros=((parede+teto)*n("demaos")/Math.max(n("rendimento"),0.1))*(1+n("perda")/100);
+ const mao=parede*n("precoM2");
+ const base=n("materiais")+mao+n("extras");
+ const reserva=base*n("imprevistos")/100;
+ const custo=base+reserva;
+ const lucro=custo*n("lucroPct")/100;
+ const final=Math.max(0,custo+lucro-n("desconto"));
+ document.getElementById("areaParede").textContent=parede.toFixed(2).replace(".",",")+" m²";
+ document.getElementById("areaTeto").textContent=teto.toFixed(2).replace(".",",")+" m²";
+ document.getElementById("litros").textContent=litros.toFixed(1).replace(".",",")+" L";
+ document.getElementById("mao").textContent=br(mao);
+ document.getElementById("custo").textContent=br(custo);
+ document.getElementById("lucro").textContent=br(lucro);
+ document.getElementById("final").textContent=br(final);
+}
+function gerarPDF(){document.title="Orcamento_LS0DZ9_"+(document.getElementById("cliente").value||"Cliente"); window.print()}
+function salvar(){const d={};ids.forEach(i=>d[i]=document.getElementById(i).value);localStorage.setItem("ls0dz9_orcamento",JSON.stringify(d));alert("Orçamento salvo neste celular!")}
+function carregar(){const d=JSON.parse(localStorage.getItem("ls0dz9_orcamento")||"null");if(!d){alert("Nenhum orçamento salvo.");return}ids.forEach(i=>{if(d[i]!==undefined)document.getElementById(i).value=d[i]});calc();alert("Último orçamento carregado!")}
+ids.forEach(i=>document.getElementById(i).addEventListener("input",calc));
+calc();
+</script>
+<script>
+let deferredPrompt;
+const installBtn=document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  installBtn.style.display="block";
+});
+installBtn.addEventListener("click",async()=>{
+  if(!deferredPrompt){alert("Use o menu do navegador e escolha “Adicionar à tela inicial” ou “Instalar aplicativo”.");return;}
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt=null;
+  installBtn.style.display="none";
+});
+window.addEventListener("appinstalled",()=>{installBtn.style.display="none";});
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js"));
+}
+</script>
+</body></html>
